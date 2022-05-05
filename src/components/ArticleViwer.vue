@@ -4,6 +4,7 @@
       <thead>
         <tr>
           <th>image</th>
+          
           <th>name</th>
           <th>description</th>
           <th>price</th>
