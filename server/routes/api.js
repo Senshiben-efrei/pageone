@@ -16,11 +16,7 @@ router.post('/post', (req, res) => {
 
 });
 //request
-router.get('/get', (req, res) => {
+router.get('/', (req, res) => {
     console.log("get request");
-    res.json({
-        success: true
-    });
 });
-
 module.exports = router;

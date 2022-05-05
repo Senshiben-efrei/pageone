@@ -22,6 +22,8 @@
             <input type="password" placeholder="Mot de passe" name="password" id="password" required>
             <br>
             <br>
+            <h1 id="headerERR" style="display:none" >ALREADY EXIST</h1>
+            <h1 id="headerOK" style="display:none" >ACCOUNT CREATED</h1>
             <button type="submit">cree un compte</button>
         </form>
     </div>
@@ -62,7 +64,12 @@
                 .then(function(data) {
                     console.log(data.data)
                     if(data.data.err == 'ER_DUP'){
-                        alert('Un compte avec cet email a deja ete cree')
+                        document.querySelector("#headerERR").setAttribute('style', 'display:block');
+                        document.querySelector("#headerOK").setAttribute('style', 'display:none');
+                    }
+                    else{
+                        document.querySelector("#headerERR").setAttribute('style', 'display:none');
+                        document.querySelector("#headerOK").setAttribute('style', 'display:block');
                     }
                     document.querySelector("input[name=firstname]").value = ''
                     document.querySelector("input[name=lastname]").value = ''

@@ -1,5 +1,7 @@
 <template>
-    <header>
+    <header class="nav-bar-space-between">
+        <img src="../assets/logo.svg" alt="" style="height:100px">
+        <div class="nav-bar-space-evenly">
         <a href="/UserIdentification">
             <button>Athentification</button>
         </a>
@@ -7,8 +9,9 @@
             <button>Catalogue</button>
         </a>
         <a href="/MyCart">
-            <button>Mon panier</button>
+            <button>Panier</button>
         </a>
+        </div>
     </header>
 </template>
 

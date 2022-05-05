@@ -1,9 +1,16 @@
 <template>
-    <h1>this is the bookshelf</h1>
+    <div>
+        <h1>this is the bookshelf</h1>
+        <ArticleViwer />
+    </div>
 </template>
 
 <script>
+    import ArticleViwer from '../components/ArticleViwer.vue'
     export default {
-        name: 'BookCatalog'
+        name: 'BookCatalog',
+        components: {
+            ArticleViwer,
+    },
     }
 </script>

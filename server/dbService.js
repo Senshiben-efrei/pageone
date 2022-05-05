@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const dotenv = require('dotenv');
+const bcrypt = require('bcrypt')
 let instance = null;
 dotenv.config();
 
@@ -25,12 +26,13 @@ class dbService{
 
     async insertAccount(firstName ,lastName , email, password){
         try{
+            const hashedPassword = await bcrypt.hash(password, 10)
             await new Promise(function(resolve, reject){
                 const postQuery = "INSERT INTO users (first_name, last_name, email, password) VALUES ?";
-                const values=[[firstName ,lastName , email, password]]
+                const values=[[firstName ,lastName , email, hashedPassword]]
                 dbConnection.query(postQuery, [values], function(error, result){
                     if(error) {
-                        console.log(error.sqlMessage.substring(0,9));
+                        console.log(error.sqlMessage);
                         reject(new Error(error.message));
                     }
                     resolve(result)
