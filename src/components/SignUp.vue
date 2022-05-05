@@ -60,7 +60,10 @@
                 })
                 .then(response => response.json())
                 .then(function(data) {
-                    console.log(data)
+                    console.log(data.data)
+                    if(data.data.err == 'ER_DUP'){
+                        alert('Un compte avec cet email a deja ete cree')
+                    }
                     document.querySelector("input[name=firstname]").value = ''
                     document.querySelector("input[name=lastname]").value = ''
                     document.querySelector("input[name=email]").value = ''

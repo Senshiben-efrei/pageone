@@ -8,10 +8,12 @@ console.log('api loaded')
 router.post('/post', (req, res) => {
     console.log("post request");
     //console.log(req.body)
-     (dbService.insertAccount(req.body.newAccount.firstName ,req.body.newAccount.lastName , req.body.newAccount.email, req.body.newAccount.password))
-    res.json({
-        success: true
-    });
+    const db = dbService.getDbServiceInstance();
+    const result = db.insertAccount(req.body.newAccount.firstName ,req.body.newAccount.lastName , req.body.newAccount.email, req.body.newAccount.password)
+    result
+    .then(data => res.json({ data: data}))
+    .catch(err => console.log(err));
+
 });
 //request
 router.get('/get', (req, res) => {

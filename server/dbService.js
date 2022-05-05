@@ -1,8 +1,9 @@
 const mysql = require('mysql');
 const dotenv = require('dotenv');
+let instance = null;
 dotenv.config();
 
-const db = mysql.createConnection({
+const dbConnection = mysql.createConnection({
     host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
@@ -10,33 +11,42 @@ const db = mysql.createConnection({
     port: process.env.DB_PORT
 });
 
-db.connect((err) => {
+dbConnection.connect((err) => {
     if(err) {
         console.log(err.message);
     }
-    console.log('db ' + db.state);
+    console.log('db ' + dbConnection.state);
 });
 
 class dbService{
-    static logText(){
-        return('i have been called')
+    static getDbServiceInstance() {
+        return instance ? instance : new dbService();
     }
 
-    static insertAccount(firstName ,lastName , email, password){
-        var postQuery = "INSERT INTO users (first_name, last_name, email, password) VALUES ?";
-        var values=[[firstName ,lastName , email, password]]
-        db.query(postQuery, [values], function(error, result){
-            if(!!error) {
-                console.log(error.sqlMessage.substring(0,9));
-                if(error.sqlMessage.substring(0,9) == 'Duplicate'){
-                    console.log("returned Duplicate error")
-                    return('Duplicate');
-                }
+    async insertAccount(firstName ,lastName , email, password){
+        try{
+            await new Promise(function(resolve, reject){
+                const postQuery = "INSERT INTO users (first_name, last_name, email, password) VALUES ?";
+                const values=[[firstName ,lastName , email, password]]
+                dbConnection.query(postQuery, [values], function(error, result){
+                    if(error) {
+                        console.log(error.sqlMessage.substring(0,9));
+                        reject(new Error(error.message));
+                    }
+                    resolve(result)
+                });
+            });
+            return {
+                email: email
+            };
+        }
+        catch (error){
+            console.log('returning after error')
+            return {
+                err: error.message.substring(0,6),
+            };
+        }
 
-            }else{
-                console.log('successful post')
-            }
-        });
     }
 }
 
