@@ -18,5 +18,6 @@ router.post('/post', (req, res) => {
 //request
 router.get('/', (req, res) => {
     console.log("get request");
+    res.redirect('http://localhost:8080/')
 });
 module.exports = router;

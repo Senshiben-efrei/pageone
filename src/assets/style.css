@@ -12,6 +12,12 @@ html{
     background-color: #171717
 }
 
+header {
+    background-color:#444444;
+    border-radius: 20px;
+    padding: 10px
+}
+
 h1 {
     color: #DA0037
 }
@@ -28,6 +34,10 @@ button {
     padding: 5px;
     margin-left: 1%;
     margin-right: 1%;
+}
+
+button:hover{
+    background-color:#DA0037;
 }
 
 input{
@@ -91,33 +101,110 @@ div {
     justify-content: center;
 }
 
-.OneItem{
-    max-width: 300px;
-    margin: 30px;
+.flex-container-column-space-between {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.flex-container-column-space-evenly {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.OneItem{
+    border-radius: 20px;
+    width: 300px;
+    height: 485px;
+    margin: 30px;
+    transition: all 0.3s;
+    background-repeat: no-repeat;
+    background-size: 340px 550px;
+}
+
+.OneItem:hover {
+  background-color: #da0037c5; /* Tint color */
+  background-blend-mode: multiply;
+  border-radius: 0px;
 }
 
 .text{
+    height:70px;
+    margin-top: 435px;
+    background-color: #000000;
     border: solid 3px #DA0037;
-    border-radius: 10px;    
-    transition: all 0.5s;
+    transition: all 0.3s;
+    border-radius: 15px;
 }
 
-.OneItem:hover .text{
-    font-size: 14px;
-    margin-right: 30px;
-    border: solid 3px #444444;
+.OneItem:hover .text {
+    margin-top: 180px;
+    height:305px;
+    border: solid 5px #DA0037;
 }
 
-.OneItem:hover img{
-    transition: all 0.5s;
-    transform: scale(1.5, 1.5);
+.OneItem:hover .text .hidden {
+    display: block;
 }
 
-.articleImg{
-    width: 100px;
-    height: 100px;
-    padding: 30px;
-    border-radius: 25%;
+.price {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    color: #DA0037;
+}
+
+.xname {
+    
+    font-size: 15px;
+    color: #EDEDED;
+}
+
+.name {
+    display: table;
+    height: 60px;
+    max-width: 190px;
+}
+  
+.name span {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.description {
+    max-height: 150px;
+    padding: 10px;
+    font-size: 15px;
+    color: #EDEDED;
+    overflow: auto;
+}
+
+.options {
+    height: 300px;
+    transition: all 0.7s;
+}
+
+.options ::-webkit-scrollbar{
+    width: 5px;
+}
+
+.editor-container {
+    background-color: #00000022;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.editor {
+    background-color: #171717;
+    width: 600px;
+    max-width: 100%;
+    padding: 30px 50px;
+    border-radius: 25px;
+    border: 3px solid #DA0037
 }

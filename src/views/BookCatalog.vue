@@ -1,16 +1,16 @@
 <template>
     <div>
         <h1>this is the bookshelf</h1>
-        <ArticleViwer />
+        <ArticleViwer_copy />
     </div>
 </template>
 
 <script>
-    import ArticleViwer from '../components/ArticleViwer.vue'
+    import ArticleViwer_copy from '../components/ArticleViwer_copy.vue'
     export default {
         name: 'BookCatalog',
         components: {
-            ArticleViwer,
+            ArticleViwer_copy,
     },
     }
 </script>

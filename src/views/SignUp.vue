@@ -53,7 +53,7 @@
                 )
                 console.log(newData)
 
-                fetch('http://192.168.1.15:5000/api/post',{
+                fetch('http://192.168.1.15:5000/post',{
                     headers: {
                         'Content-Type': 'application/json'
                     },

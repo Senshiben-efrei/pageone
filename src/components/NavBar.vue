@@ -2,10 +2,10 @@
     <header class="nav-bar-space-between">
         <img src="../assets/logo.svg" alt="" style="height:100px">
         <div class="nav-bar-space-evenly">
-        <a href="/UserIdentification">
+        <a href="/SignUp">
             <button>Athentification</button>
         </a>
-        <a href="/BookCatalog">
+        <a href="/">
             <button>Catalogue</button>
         </a>
         <a href="/MyCart">
