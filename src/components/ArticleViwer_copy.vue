@@ -11,23 +11,30 @@
           <div class=" options">
             <div class="nav-bar-space-evenly">
               <button class="hidden">Borrow</button>
-              <button class="hidden" @click="editBook()">Edit</button>
+              <button class="hidden" @click="edit('edit_' + Books._id)">Edit</button>
               <button class="hidden">Delete</button>
             </div>
             <div class="hidden description">{{ Books.shortDescription }}</div>
           </div>
         </div>
       </div>
-      <div class="editor-container hidden " >
+      <div class="editor-container " v-bind:id="'edit_' + Books._id">
         <div class="editor">
-          <h1>EDIT BOX</h1>
+          <h1>EDIT BOOK</h1>
           <div class="nav-bar-space-evenly">
-            <form @submit.prevent="sendEditBook">
-              <input type="text">
-              <input type="textarea">
-              <input type="select">
-            </form>
             <img :src="Books.thumbnailUrl" alt="">
+            <form @submit.prevent="sendEditBook" class="flex-container-column-space-evenly">
+              <input type="text">
+              <br>
+              <input type="textarea">
+              <br>
+              <input type="select">
+              <br>
+              <br>
+              <button type="submit">Edit</button>
+              <br>
+              <button @click="cancel('edit_' + Books._id)">cancel</button>
+            </form>
           </div>
         </div>
       </div>
@@ -44,6 +51,18 @@
       }
     },
     methods: {
+      edit(bookId){
+        console.log('click')
+        console.log(bookId)
+        const bookEdit = document.getElementById(bookId)
+        bookEdit.classList.add('show')
+      },
+      cancel(bookId){
+        console.log('click')
+        console.log(bookId)
+        const bookEdit = document.getElementById(bookId)
+        bookEdit.classList.remove('show')
+      }
     }
   }
 </script>
