@@ -29,7 +29,7 @@ h3 {
 button {
     background-color:#444444;
     color: #EDEDED;
-    border: 1px solid #444444;
+    border: none;
     border-radius: 3px;
     padding: 5px;
     margin-left: 1%;
@@ -79,7 +79,9 @@ div {
 }
 
 .hidden {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.7s ease-in ;
 }
 
 .nav-bar-space-between {
@@ -119,7 +121,7 @@ div {
     margin: 30px;
     transition: all 0.3s;
     background-repeat: no-repeat;
-    background-size: 340px 550px;
+    background-size: 310px 550px;
 }
 
 .OneItem:hover {
@@ -144,7 +146,8 @@ div {
 }
 
 .OneItem:hover .text .hidden {
-    display: block;
+    visibility: visible;
+    opacity: 1;
 }
 
 .price {
@@ -172,12 +175,18 @@ div {
 }
 
 .description {
-    max-height: 150px;
+    max-height: 130px;
     padding: 10px;
     font-size: 15px;
     color: #EDEDED;
     overflow: auto; 
-    text-align: justify;
+    text-align: center;
+}
+
+.author {
+    font-size: 20px;
+    font-weight: bold;
+    color: #EDEDED;
 }
 
 .options {
@@ -215,7 +224,10 @@ div {
     max-width: 100%;
     padding: 30px 50px;
     border-radius: 25px;
-    border: 3px solid #DA0037
+    border: 3px solid #DA0037;
+    text-align: left;
+    font-size: 13px;
+    color: #444444;
 }
 
 .editor img{
@@ -223,3 +235,4 @@ div {
     width: 150px;
     margin: 20px;
 }
+

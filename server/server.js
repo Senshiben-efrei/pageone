@@ -13,4 +13,4 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', api)
 
 //run
-app.listen(process.env.PORT, () => console.log('app is running at http://localhost:'+ process.env.PORT));
+app.listen(process.env.PORT, () => console.log('app is running at \x1b[95mhttp://localhost:'+ process.env.PORT + '\x1b[0m'));

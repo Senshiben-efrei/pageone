@@ -16,12 +16,28 @@ dbConnection.connect((err) => {
     if(err) {
         console.log(err.message);
     }
-    console.log('db ' + dbConnection.state);
+    console.log('data base \x1b[32m' + dbConnection.state + '\x1b[0m');
 });
 
 class dbService{
     static getDbServiceInstance() {
         return instance ? instance : new dbService();
+    }
+
+    async getBooks(){
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const getquery = "SELECT * FROM books;";
+
+                dbConnection.query(getquery, (err, result) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(result);
+                })
+            });
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async insertAccount(firstName ,lastName , email, password){
@@ -49,6 +65,65 @@ class dbService{
             };
         }
 
+    }
+
+    async editBook(id, name, price, stars, supply){
+        try{
+            const response = await new Promise((resolve, reject) => {
+                const query = " UPDATE books SET name = ?, price = ?, book_depository_stars = ?, supply = ? WHERE book_id = ?";
+                const values=[name, price, stars, supply, id]
+                console.log(values)
+                dbConnection.query(query, values , (err, result) => {
+                    if(err) reject(new Error(err.message));
+                    resolve(result)
+                })
+            })
+            console.log('Edited Rows ' + response.affectedRows);
+            console.log('\x1b[36medited \x1b[0m' + id)
+            return response.affectedRows;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
+    async deleteBook(bookId){
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const query = "DELETE FROM books WHERE book_id = ?";
+    
+                dbConnection.query(query, [bookId] , (err, result) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(result);
+                })
+            });
+            console.log('Deleted Rows ' + response.affectedRows);
+            console.log('\x1b[31mdeleted \x1b[0m' + bookId)
+            return response.affectedRows;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
+    async addBook(name, price, stars, supply, author, image, category){
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const query = " INSERT INTO books (name, price, book_depository_stars, supply, author, image, category) VALUES ?";
+                const values=[[name, price, stars, supply, author, image, category]]
+                console.log(values)
+                dbConnection.query(query, [values] , (err, result) => {
+                    if(err) reject(new Error(err.message));
+                    resolve(result)
+                })
+            })
+            console.log('Edited Rows ' + response.affectedRows);
+            console.log('\x1b[36madded \x1b[0m' + name)
+            return response.affectedRows;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
     }
 }
 
