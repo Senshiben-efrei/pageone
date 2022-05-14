@@ -1,7 +1,12 @@
 <template>
   <div onload="getBooks">
     <div>
-      <input type="text" placeholder="rechercher">
+      <form @submit.prevent="search()">
+        <input id="search_bar" type="text" placeholder="rechercher">
+        <button type='submit'>Rechercher</button>
+      </form>
+      <br>
+      <br>
       <button @click="edit('addForm')">Ajouter un livre</button>
 
       <div class="editor-container " v-bind:id="'addForm'">
@@ -54,6 +59,7 @@
               <div class="hidden author">Auteur : {{ book.author }}</div>
               <div class="hidden description">Categorie : {{ book.category }}</div>
               <div class="hidden description">Note : {{ book.book_depository_stars }} / 5</div>
+              <div class="hidden description">isbn : {{ book.isbn }}</div>
               <div class="hidden description">stock : {{ book.supply }} unité</div>
               <div class="nav-bar-space-evenly">
                 <button class="hidden">Emprunter</button>
@@ -132,7 +138,7 @@
     },
     methods: {
       getBooks(){
-        fetch('http://192.168.1.74:5000/books')
+        fetch('http://localhost:5000/books')
         .then((response) => response.json())
         .then((response) => this.books = response.data.slice(701))
       },
@@ -153,7 +159,7 @@
           parseInt(document.getElementById("supplyEdit" + bookId).value)
         )
         console.log('edit ' + bookId)
-        fetch('http://192.168.1.74:5000/books/' + bookId, {
+        fetch('http://localhost:5000/books/' + bookId, {
           headers: {
               'Content-Type': 'application/json'
           },
@@ -170,7 +176,7 @@
       },
       deleteBook(bookId){
         console.log('delete ' + bookId)
-        fetch('http://192.168.1.74:5000/books/' + bookId, {
+        fetch('http://localhost:5000/books/' + bookId, {
           method:'DELETE'
         })
         .then((response) => response.json())
@@ -191,7 +197,7 @@
           document.getElementById('categoryEdit').value, 
         )
         console.log('adding book')
-        fetch('http://192.168.1.74:5000/booksis', {
+        fetch('http://localhost:5000/books', {
           headers: {
               'Content-Type': 'application/json'
           },
@@ -212,6 +218,13 @@
             document.getElementById('categoryEdit').value = ''
           }
         })
+      },
+      search() {
+        var name = document.getElementById('search_bar').value
+        fetch('http://localhost:5000/books/' + name)
+        .then((response) => response.json())
+        .then((response) => this.books = response.data)
+        console.log('search')
       }
     }
   }

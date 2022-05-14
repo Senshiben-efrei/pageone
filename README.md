@@ -8,6 +8,8 @@ npm install
 ### Compiles and hot-reloads for development
 ```
 npm run serve
+cd server
+nodemon server
 ```
 
 ### Compiles and minifies for production

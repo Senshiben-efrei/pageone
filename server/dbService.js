@@ -24,25 +24,10 @@ class dbService{
         return instance ? instance : new dbService();
     }
 
-    async getBooks(){
-        try {
-            const response = await new Promise((resolve, reject) => {
-                const getquery = "SELECT * FROM books;";
-
-                dbConnection.query(getquery, (err, result) => {
-                    if (err) reject(new Error(err.message));
-                    resolve(result);
-                })
-            });
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     async insertAccount(firstName ,lastName , email, password){
         try{
             const hashedPassword = await bcrypt.hash(password, 10)
+            console.log(password)
             await new Promise(function(resolve, reject){
                 const postQuery = "INSERT INTO users (first_name, last_name, email, password) VALUES ?";
                 const values=[[firstName ,lastName , email, hashedPassword]]
@@ -65,6 +50,38 @@ class dbService{
             };
         }
 
+    }
+
+    async getUsers(){
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const getquery = "SELECT * FROM users;";
+
+                dbConnection.query(getquery, (err, result) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(result);
+                })
+            });
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getBooks(){
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const getquery = "SELECT * FROM books;";
+
+                dbConnection.query(getquery, (err, result) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(result);
+                })
+            });
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async editBook(id, name, price, stars, supply){
@@ -120,6 +137,25 @@ class dbService{
             console.log('Edited Rows ' + response.affectedRows);
             console.log('\x1b[36madded \x1b[0m' + name)
             return response.affectedRows;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
+    async searchByName(name) {
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const searched = '%' + name + '%'
+                const query = "SELECT * FROM books WHERE name LIKE ?;"
+
+                dbConnection.query(query, [searched], (err, results) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(results);
+                })
+            });
+
+            return response;
         } catch (error) {
             console.log(error);
             return error;

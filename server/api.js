@@ -1,10 +1,44 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const router = express.Router()
+const dbService = require('./dbService');
+const bcrypt = require('bcrypt');
 
-const dbService = require('../dbService');
+
+router.use(express.urlencoded({ extended: false }));
+var cors = require('cors');
+router.use(cors());
+router.use(express.json())
+
 
 console.log('\x1b[33mApi loaded\x1b[0m')
-//create
+
+var users = []
+const db = dbService.getDbServiceInstance();
+const result = db.getUsers();
+result
+.then(data => users = data)
+.catch(err => console.log('getting users' + err))
+
+//login account
+router.post('/SignIn', async (req, res) => {
+    const user = users.find(user => user.email === req.body.logAttempt.email)
+    if (user == null) {
+        return res.status(400).send('Cannot find user')
+    }
+    try {
+        if(await bcrypt.compare(req.body.logAttempt.password, user.password)) {
+            res.json({Success : user})
+        } else {
+            res.send('Not Allowed')
+        }
+    } catch {
+        res.status(500).send('error')
+    }
+})
+
+//create account
 router.post('/post', (req, res) => {
     console.log("\x1b[33mpost request\x1b[0m");
     const db = dbService.getDbServiceInstance();
@@ -14,10 +48,11 @@ router.post('/post', (req, res) => {
     .catch(err => console.log(err));
 
 });
+
 //request homepage
 router.get('/', (req, res) => {
     console.log("\x1b[33mMain page request\x1b[0m");
-    res.redirect('http://192.168.1.74:8080/')
+    res.redirect('http://localhost:8080/')
 });
 
 //request book list
@@ -52,7 +87,7 @@ router.delete('/books/:id', (req, res) => {
 })
 
 //request book post
-router.post('/booksis', (req, res) => {
+router.post('/books', (req, res) => {
     console.log("\x1b[33mAdd request\x1b[0m");
     const db = dbService.getDbServiceInstance();
     const result = db.addBook(req.body.newBook.nameEdit, req.body.newBook.priceEdit, req.body.newBook.starsEdit, req.body.newBook.supplyEdit, req.body.newBook.authorEdit, req.body.newBook.thumbnailEdit, req.body.newBook.categoryEdit);
@@ -61,6 +96,16 @@ router.post('/booksis', (req, res) => {
     .catch(err => console.log(err));
 
 });
+
+//reqest book search
+router.get('/books/:name', (req, res) => {
+    console.log('\x1b[33mSearch reqest\x1b[0m')
+    const db = dbService.getDbServiceInstance();
+    const result = db.searchByName(req.params.name);
+    result
+    .then(data => res.json({data : data}))
+    .catch(err => console.log(err));
+})
 
 
 module.exports = router;

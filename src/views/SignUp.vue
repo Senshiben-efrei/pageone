@@ -26,6 +26,9 @@
             <h1 id="headerOK" style="display:none" >ACCOUNT CREATED</h1>
             <button type="submit">cree un compte</button>
         </form>
+        <br>
+        <span>Déjà inscrit ? </span>
+        <a href="/SignIn">Identifiez-vous</a>
     </div>
 </template>
 
@@ -53,7 +56,7 @@
                 )
                 console.log(newData)
 
-                fetch('http://192.168.1.74:5000/post',{
+                fetch('http://localhost:5000/post',{
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -70,6 +73,7 @@
                     else{
                         document.querySelector("#headerERR").setAttribute('style', 'display:none');
                         document.querySelector("#headerOK").setAttribute('style', 'display:block');
+                        window.location.href = '/SignIn'
                     }
                     document.querySelector("input[name=firstname]").value = ''
                     document.querySelector("input[name=lastname]").value = ''
