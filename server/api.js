@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
+const session = require('express-session');
 const router = express.Router()
 const dbService = require('./dbService');
 const bcrypt = require('bcrypt');
@@ -8,8 +9,20 @@ const bcrypt = require('bcrypt');
 
 router.use(express.urlencoded({ extended: false }));
 var cors = require('cors');
-router.use(cors());
+router.use(cors()); 
 router.use(express.json())
+
+router.use(
+    session({
+        name: 'SESSION_ID',      // cookie name stored in the web browser
+        secret: 'my_secret',     // helps to protect session
+        cookie: {
+            maxAge: 30 * (24 * 60 * 60 * 1000)
+        },
+        resave: true,
+        saveUninitialized: true
+    })
+);
 
 
 console.log('\x1b[33mApi loaded\x1b[0m')
@@ -25,13 +38,14 @@ result
 router.post('/SignIn', async (req, res) => {
     const user = users.find(user => user.email === req.body.logAttempt.email)
     if (user == null) {
-        return res.status(400).send('Cannot find user')
+        return res.json({result : 'Utilisateur introuvable'})
     }
     try {
         if(await bcrypt.compare(req.body.logAttempt.password, user.password)) {
-            res.json({Success : user})
+            console.log(user.first_name + ' logged in')
+            res.json({result: 'Bienvenu ' + user.first_name, user: user})
         } else {
-            res.send('Not Allowed')
+            res.json({result : 'Mot de pass inccorect'})
         }
     } catch {
         res.status(500).send('error')
@@ -44,8 +58,15 @@ router.post('/post', (req, res) => {
     const db = dbService.getDbServiceInstance();
     const result = db.insertAccount(req.body.newAccount.firstName ,req.body.newAccount.lastName , req.body.newAccount.email, req.body.newAccount.password)
     result
-    .then(data => res.json({ data: data}))
+    .then(data => {
+        res.json({ data: data })
+        const result2 = db.getUsers();
+        result2
+        .then(data => users = data)
+        .catch(err => console.log('getting users' + err))
+    })
     .catch(err => console.log(err));
+    
 
 });
 

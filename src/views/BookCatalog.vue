@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>this is the bookshelf</h1>
+        <h1>Le catalogue des livres</h1>
         <ArticleViwer_copy />
     </div>
 </template>

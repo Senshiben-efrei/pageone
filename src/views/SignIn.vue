@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h3>SIGNIN</h3>
+        <img src="../assets/logo.svg" class="logo" alt="404">
+        <h1>S'identifier</h1>
         <form @submit.prevent="login">
             <label for="email"><b>Email</b></label>
             <br>
@@ -15,6 +16,8 @@
             <button type="submit">se connecter</button>
         </form>
         <br>
+        <h1> {{ loginResult }} </h1>
+        <br>
         <span>Pas encore inscrit ? </span>
         <a href="/SignUp">S'inscrire</a>
     </div>
@@ -28,6 +31,12 @@
         }
     }
     export default {
+        data() {
+            return {
+                user : '',
+                loginResult : ''
+            }
+        },
         methods:{
             login(){
                 var logData = new formData(
@@ -42,6 +51,11 @@
                     },
                     method:'POST',
                     body: JSON.stringify({logAttempt : logData})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.result)
+                    this.loginResult = data.result
                 })
 
             }

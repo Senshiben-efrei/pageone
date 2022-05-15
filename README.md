@@ -5,9 +5,28 @@
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## Setup .env fle
+```
+PORT=5000
+DATABASE=pageOne
+DB_PORT=3306
+USER=<>
+PASSWORD=<>
+HOST=localhost
+```
+
+### Create database 
+```
+use server/mysql_database_creation_code.sql
+```
+
+## Start client
 ```
 npm run serve
+```
+
+### Start server 
+```
 cd server
 nodemon server
 ```

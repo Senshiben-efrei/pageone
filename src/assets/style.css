@@ -13,13 +13,13 @@ html{
 }
 
 header {
-    background-color:#444444;
+    background-color:#202020;
     border-radius: 20px;
     padding: 10px
 }
 
 h1 {
-    color: #DA0037
+    color: #7f5af0
 }
 
 h3 {
@@ -27,7 +27,7 @@ h3 {
 }
 
 button {
-    background-color:#444444;
+    background-color:#202020;
     color: #EDEDED;
     border: none;
     border-radius: 3px;
@@ -37,7 +37,7 @@ button {
 }
 
 button:hover{
-    background-color:#DA0037;
+    background-color:#7f5af0;
 }
 
 input{
@@ -45,7 +45,7 @@ input{
     background-color:#171717;
     color: #EDEDED;
     border: none;
-    border-bottom: 2px solid #DA0037;
+    border-bottom: 2px solid #7f5af0;
     border-radius: 2px;
 }
 
@@ -59,7 +59,7 @@ textarea{
     background-color:#171717;
     color: #EDEDED;
     border: none;
-    border-bottom: 2px solid #DA0037;
+    border-bottom: 2px solid #7f5af0;
     border-radius: 2px;
     width:300px;
 }
@@ -76,6 +76,14 @@ img {
 
 div {
     padding: 1%;
+}
+
+input{
+    margin: 10px;
+}
+
+a {
+    color: #7f5af0
 }
 
 .hidden {
@@ -125,7 +133,7 @@ div {
 }
 
 .OneItem:hover {
-  background-color: #da0037c5; /* Tint color */
+  background-color: #7f5af0c5; /* Tint color */
   background-blend-mode: multiply;
   border-radius: 0px;
 }
@@ -134,7 +142,7 @@ div {
     height:70px;
     margin-top: 435px;
     background-color: #000000;
-    border: solid 3px #DA0037;
+    border: solid 3px #7f5af0;
     transition: all 0.3s ease;
     border-radius: 15px;
 }
@@ -142,7 +150,7 @@ div {
 .OneItem:hover .text {
     margin-top: 180px;
     height:305px;
-    border: solid 5px #DA0037;
+    border: solid 5px #7f5af0;
 }
 
 .OneItem:hover .text .hidden {
@@ -154,7 +162,7 @@ div {
     padding-top: 20px;
     padding-bottom: 20px;
     font-size: 20px;
-    color: #DA0037;
+    color: #7f5af0;
 }
 
 .xname {
@@ -224,7 +232,7 @@ div {
     max-width: 100%;
     padding: 30px 50px;
     border-radius: 25px;
-    border: 3px solid #DA0037;
+    border: 3px solid #7f5af0;
     text-align: left;
     font-size: 13px;
     color: #444444;
@@ -234,5 +242,19 @@ div {
     height: 200px;
     width: 150px;
     margin: 20px;
+}
+
+.logo {
+    max-width: 300px;
+}
+
+.logo.nav{
+    margin-right: 5px;
+    margin-left: 5px
+}
+
+.logo.ico{
+    max-width: 30px;
+    padding-right: 35px;
 }
 

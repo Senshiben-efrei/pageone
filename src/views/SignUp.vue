@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h3>SIGNUP</h3>
+        <img src="../assets/logo.svg" class="logo" alt="404">
+        <h1>S'inscrire</h1>
         <form @submit.prevent="addAccount">
             <label for="firstname"><b>Prenom</b></label>
             <br>
@@ -22,10 +23,10 @@
             <input type="password" placeholder="Mot de passe" name="password" id="password" required>
             <br>
             <br>
-            <h1 id="headerERR" style="display:none" >ALREADY EXIST</h1>
-            <h1 id="headerOK" style="display:none" >ACCOUNT CREATED</h1>
             <button type="submit">cree un compte</button>
         </form>
+        <br>
+        <h3> {{ registerResult }} </h3>
         <br>
         <span>Déjà inscrit ? </span>
         <a href="/SignIn">Identifiez-vous</a>
@@ -41,9 +42,10 @@
             this.password=password
         }
     }
-    module.exports = {
+    export default {
         data() {
             return {
+                registerResult : ''
             }
         },
         methods: {
@@ -64,15 +66,14 @@
                     body: JSON.stringify({newAccount : newData})
                 })
                 .then(response => response.json())
-                .then(function(data) {
+                .then(data => {
                     console.log(data.data)
                     if(data.data.err == 'ER_DUP'){
-                        document.querySelector("#headerERR").setAttribute('style', 'display:block');
-                        document.querySelector("#headerOK").setAttribute('style', 'display:none');
+                        console.log(data.data.err)
+                        this.registerResult = 'Email deja existant'
                     }
                     else{
-                        document.querySelector("#headerERR").setAttribute('style', 'display:none');
-                        document.querySelector("#headerOK").setAttribute('style', 'display:block');
+                        this.registerResult = 'Compte cree'
                         window.location.href = '/SignIn'
                     }
                     document.querySelector("input[name=firstname]").value = ''
