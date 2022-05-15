@@ -1,118 +1,231 @@
 <template>
-  <div>
-    <table class="users">
-      <thead>
-        <tr>
-          <th>image</th>
-          <th>name</th>
-          <th>description</th>
-          <th>price</th>
-          <th >operation</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="article in articles" :key="article.id">
-          <td><img v-bind:src="article.image" alt="" class="articleImg"></td>
-          <td>{{article.name}}</td>
-          <td>{{article.description}}</td>
-          <td>{{article.price}}</td>
-          <td style="display:none">
-            <button type="button" @click="editUser(article.id)">edit</button>
-            <button type="button" @click="deleteUser(article)">delete</button>
-          </td>
-          <EditBook class="hidden"  v-bind:id="article.id" />
-        </tr>
-      </tbody>
-    </table>
+  <div onload="getBooks">
+    <div>
+      <form @submit.prevent="search()">
+        <img src="../assets/search.svg" alt="" style="width: 40px; padding-right: 30px">
+        <input id="search_bar" type="text" placeholder="rechercher">
+        <button type='submit'>Rechercher</button>
+      </form>
+      <br>
+      <br>
+      <button @click="edit('addForm')">Ajouter un livre</button>
+
+      <div class="editor-container " v-bind:id="'addForm'">
+        <div class="editor">
+          <h1>Ajouter un livre</h1>
+          <div class="nav-bar-space-evenly">
+            <form @submit.prevent="addBook()" class="flex-container-column-space-evenly">
+              <label for="nameEdit">Donner le titre</label>
+              <input v-bind:id="'nameEdit'" type="text">
+              <br>
+              <label for="priceEdit">Donner prix</label>
+              <input v-bind:id="'priceEdit'" type="number" step="0.01" min="0">
+              <br>
+              <label for="starsEdit">Donner la note</label>
+              <input v-bind:id="'starsEdit'" type="number" step="0.1" min="0" max="5">
+              <br>
+              <label for="supplyEdit">Donner la quantité</label>
+              <input v-bind:id="'supplyEdit'" type="number" min="0">
+              <br>
+              <label for="priceEdit">Donner l'auteur</label>
+              <input v-bind:id="'authorEdit'" type="text">
+              <br>
+              <label for="priceEdit">Donner le lien de la couverture</label>
+              <input v-bind:id="'thumbnailEdit'" type="text">
+              <br>
+              <label for="priceEdit">Donner les categories</label>
+              <input v-bind:id="'categoryEdit'" type="text">
+              <br>
+              <br>
+              <button type="submit">Enregistrer</button>
+              <br>
+              <button type="button" @click="cancel('addForm')">Annuler</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-container">
+
+      <div v-for="book in books" :key="book.book_id">
+        <div class="OneItem" :style="{'background-image': `url(${book.image})`}">
+          <div class="text" >
+            <div class="nav-bar-space-between">
+              <div class="name">
+                <span>{{ book.name }}</span></div>
+              <div class="price">{{ book.price }} {{ book.currency }} </div>
+            </div>
+            <div class=" options">
+              <div class="hidden author">Auteur : {{ book.author }}</div>
+              <div class="hidden description">Categorie : {{ book.category }}</div>
+              <div class="hidden description">Note : {{ book.book_depository_stars }} / 5</div>
+              <div class="hidden description">isbn : {{ book.isbn }}</div>
+              <div class="hidden description">stock : {{ book.supply }} unité</div>
+              <div class="nav-bar-space-evenly">
+                <button class="hidden">Emprunter</button>
+                <button class="hidden" @click="edit('edit_' + book.book_id)">Modifier</button>
+                <button class="hidden" @click="deleteBook(book.book_id)">Supprimer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-container " v-bind:id="'edit_' + book.book_id">
+          <div class="editor">
+            <h1>Modifer le livre</h1>
+            <div class="nav-bar-space-evenly">
+              <img :src="book.image" alt="">
+              <form @submit.prevent="editBook(book.book_id)" class="flex-container-column-space-evenly">
+                <label for="nameEdit">Changer le titre</label>
+                <input v-bind:id="'nameEdit' + book.book_id" type="text" :value="book.name">
+                <br>
+                <label for="priceEdit">Changer prix</label>
+                <input v-bind:id="'priceEdit' + book.book_id" type="number" step="0.01" min="0" :value="book.price">
+                <br>
+                <label for="starsEdit">Changer la note</label>
+                <input v-bind:id="'starsEdit' + book.book_id" type="number" step="0.1" min="0" max="5" :value="book.book_depository_stars">
+                <br>
+                <label for="supplyEdit">Changer la quantité</label>
+                <input v-bind:id="'supplyEdit' + book.book_id" type="number" min="0" :value="book.supply">
+                <br>
+                <br>
+                <button type="submit">Enregistrer</button>
+                <br>
+                <button type="button" @click="cancel('edit_' + book.book_id)">Annuler</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import EditBook from '../components/EditBook.vue'
+  class editData {
+    constructor(book_id, nameEdit, priceEdit, starsEdit, supplyEdit) {
+      this.book_id = book_id
+      this.nameEdit = nameEdit
+      this.priceEdit = priceEdit
+      this.starsEdit = starsEdit
+      this.supplyEdit = supplyEdit
+    }
+  }
+  class bookData {
+    constructor(nameEdit, priceEdit, starsEdit, supplyEdit, authorEdit, thumbnailEdit, categoryEdit) {
+      this.nameEdit = nameEdit
+      this.priceEdit = priceEdit
+      this.starsEdit = starsEdit
+      this.supplyEdit = supplyEdit
+      this.authorEdit = authorEdit
+      if (thumbnailEdit == ''){
+        this.thumbnailEdit = 'https://www.hachette.co.nz/graphics/CoverNotAvailable.jpg'
+      } else {
+        this.thumbnailEdit = thumbnailEdit
+      }
+      this.categoryEdit = categoryEdit
+    }
+  }
   export default {
-    name:'ArticleViewer',
-    components:{
-      EditBook,
-    },
     data () {
       return {
-        articles: [
-          {
-            id: 1,
-            name: 'Clé USB',
-            description: 'Cette clé usb ravira vos espoirs les plus profonds, avec ses 64Mo de mémoire.',
-            image: 'https://www.cdiscount.com/pdt2/6/6/3/1/300x300/tem6427643911663/rw/128go-128gb-cle-usb-3-0-otg-memoire-flash-drive-pl.jpg',
-            price: 100
-          },
-          {
-            id: 2,
-            name: 'Sac à main',
-            description: 'Ce sac à main est un excellent compagnon de route',
-            image: 'https://www.cdiscount.com/pdt2/9/7/6/1/300x300/gen2008530066976/rw/set-de-sacs-noirs-sac-a-main-sac-a-bandouliere.jpg',
-            price: 5
-          },
-          {
-            id: 3,
-            name: 'Vélo',
-            description: 'Allez au bout du monde avec ce magnifique vélo',
-            image: 'https://www.cdiscount.com/pdt2/0/1/s/1/300x300/veveng2601s/rw/toimsa-velo-26-cadre-acier-homme-18-vitesse.jpg',
-            price: 150
-          },
-          {
-            id: 4,
-            name: 'Trotinette',
-            description: 'Slalommez entre les taxis et les bus avec ce bolide !',
-            image: 'https://www.cdiscount.com/pdt2/8/3/8/1/300x300/auc5900168932838/rw/hypermotion-trottinette-rockster-charge-max-100-k.jpg',
-            price: 50
-          },
-          {
-            id: 5,
-            name: 'Table de ping pong',
-            description: 'Le moment de détente que tout le monde attend entre deux pauses !',
-            image: 'https://www.cdiscount.com/pdt2/6/0/6/1/300x300/spo4013771089606/rw/sponeta-table-tennis-de-table-table-ping-pong-co.jpg',
-            price: 400
-          },
-          {
-            id: 6,
-            name: 'Requin',
-            description: 'Quoi de mieux qu\'un requin pour mettre l\'ambiance dans votre soirée ?',
-            image: 'https://www.cdiscount.com/pdt2/6/5/2/1/300x300/sch4005086147652/rw/figurine-requin-tigre.jpg',
-            price: 15
-          },
-          {
-            id: 7,
-            name: 'Brosse à dents',
-            description: 'Une brosse unique pour vos 32 dents ! Marche aussi avec moins de 32 dents.',
-            image: 'https://www.cdiscount.com/pdt2/6/7/6/1/300x300/sig8717163334676/rw/signal-4-saisons-brosse-a-dents-4-actions-souple-x.jpg',
-            price: 400
-          },
-          {
-            id: 8,
-            name: 'Kayak',
-            description: 'Redécouvrez les eaux douces avec ce kayak 100% émotions garanties !',
-            image: 'https://www.cdiscount.com/pdt2/7/7/4/1/300x300/auc2009961531774/rw/kayak-airfusion-2013.jpg',
-            price: 1500
-          },
-          {
-            id: 9,
-            name: 'Roue de vélo',
-            description: 'Vous avez déconné pendant le tour de france ? Refaites-vous une santé avec ces magnifiques roues',
-            image: 'https://www.cdiscount.com/pdt2/1/6/7/1/300x300/auc3700543419167/rw/roue-marque-velox-paire-fixi-flipflop-white-2x.jpg',
-            price: 100
-          },
-          {
-            id: 10,
-            name: 'Récupérateur d\'eau de pluie',
-            description: "C'est le moment idéal de l'année pour économiser !",
-            image: 'https://www.cdiscount.com/pdt2/3/4/2/1/300x300/ose4891372830342/rw/recuperateur-eau-de-pluie-%C3%B8-80-mm.jpg',
-            price: 11
-          }
-        ]
+        books: [],
       }
     },
+    mounted:function(){
+      this.getBooks() //method1 will execute at pageload
+    },
     methods: {
-      editUser(id){
-        document.getElementById(id).setAttribute('style','display:block')
+      getBooks(){
+        fetch('http://localhost:5000/books')
+        .then((response) => response.json())
+        .then((response) => this.books = response.data)
+      },
+      edit(bookId){
+        const bookEdit = document.getElementById(bookId)
+        bookEdit.classList.add('show')
+      },
+      cancel(bookId){
+        const bookEdit = document.getElementById(bookId)
+        bookEdit.classList.remove('show')
+      },
+      editBook(bookId){
+        var editInfo = new editData(
+          bookId, 
+          document.getElementById('nameEdit' + bookId).value, 
+          parseFloat(document.getElementById("priceEdit" + bookId).value), 
+          parseFloat(document.getElementById("starsEdit" + bookId).value), 
+          parseInt(document.getElementById("supplyEdit" + bookId).value)
+        )
+        console.log('edit ' + bookId)
+        fetch('http://localhost:5000/books/' + bookId, {
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          method:'PATCH',
+          body: JSON.stringify({newData : editInfo})
+        })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.edited_rows == 1) {
+            this.getBooks()
+            document.getElementById('edit_' + bookId).classList.remove('show')
+          }
+        })
+      },
+      deleteBook(bookId){
+        console.log('delete ' + bookId)
+        fetch('http://localhost:5000/books/' + bookId, {
+          method:'DELETE'
+        })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.deleted_rows == 1) {
+            this.getBooks()
+          }
+        })
+      },
+      addBook(){
+        var bookInfo = new bookData(
+          document.getElementById('nameEdit').value, 
+          parseFloat(document.getElementById("priceEdit").value), 
+          parseFloat(document.getElementById("starsEdit").value), 
+          parseInt(document.getElementById("supplyEdit").value),
+          document.getElementById('authorEdit').value, 
+          document.getElementById('thumbnailEdit').value, 
+          document.getElementById('categoryEdit').value, 
+        )
+        console.log('adding book')
+        fetch('http://localhost:5000/books', {
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          method:'POST',
+          body: JSON.stringify({newBook : bookInfo})
+        })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.added_rows == 1) {
+            this.getBooks()
+            this.cancel('addForm')
+            document.getElementById('nameEdit').value = ''
+            document.getElementById("priceEdit").value = ''
+            document.getElementById("starsEdit").value = ''
+            document.getElementById("supplyEdit").value = ''
+            document.getElementById('authorEdit').value = ''
+            document.getElementById('thumbnailEdit').value = ''
+            document.getElementById('categoryEdit').value = ''
+          }
+        })
+      },
+      search() {
+        var name = document.getElementById('search_bar').value
+        fetch('http://localhost:5000/books/' + name)
+        .then((response) => response.json())
+        .then((response) => this.books = response.data)
+        console.log('search')
       }
     }
   }

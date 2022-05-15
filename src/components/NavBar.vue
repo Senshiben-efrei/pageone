@@ -8,7 +8,7 @@
         <div class="nav-bar-space-evenly" style="display: flex; align-items: center;">
             <a href="/SignUp" style="margin-right:25px" class=" flex-container-column-space-evenly">
                 <img src="../assets/user.svg" alt="" class="logo ico">
-                <button>Athentification</button>
+                <button>Utilisateur</button>
             </a>
             <a href="/" style="margin-right:10px" class=" flex-container-column-space-evenly">
                 <img src="../assets/catalog.svg" alt="" class="logo ico">
