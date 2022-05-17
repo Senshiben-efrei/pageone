@@ -52,7 +52,7 @@ class dbService{
 
     }
 
-    async getUsers(){
+    async getUsers(){// 
         try {
             const response = await new Promise((resolve, reject) => {
                 const getquery = "SELECT * FROM users;";
@@ -158,6 +158,82 @@ class dbService{
             return response;
         } catch (error) {
             console.log(error);
+            return error;
+        }
+    }
+
+    async findUserCart(user_id) {
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const query = "SELECT * FROM panier WHERE user_id = ?;"
+
+                dbConnection.query(query, [user_id], (err, results) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(results);
+                })
+            });
+
+            return response;
+        } catch (error) {
+            console.log('error' + error);
+            return error;
+        }
+    }
+
+    async addUserCart(user_id) {
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const query = "INSERT INTO panier (user_id) VALUES (?)"
+                console.log(query, [user_id])
+
+                dbConnection.query(query, user_id, (err, results) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(results);
+                })
+            });
+
+            return response;
+        } catch (error) {
+            console.log('error' + error);
+            return error;
+        }
+    }
+
+    async addBookToPanier(panier_id, book_id, supply) {
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const query = "INSERT INTO panier_item (id_panier, book_id, supply) VALUES ?"
+                const body = [[panier_id, book_id, supply]]
+                console.log(query, [body])
+
+                dbConnection.query(query, [body], (err, results) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(results);
+                })
+            });
+
+            return response;
+        } catch (error) {
+            console.log('error' + error);
+            return error;
+        }
+    }
+
+    async getPanier(user_id) {
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const query = "select pi.book_id, pi.supply, b.name, b.price, b.image, b.currency from(select book_id,supply from panier_item cross join panier where user_id = ?) as pi join books b on b.book_id where b.book_id=pi.book_id order by book_id;"
+                console.log(query, user_id)
+
+                dbConnection.query(query, user_id, (err, results) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(results);
+                })
+            });
+            console.log(response)
+            return response;
+        } catch (error) {
+            console.log('error' + error);
             return error;
         }
     }
