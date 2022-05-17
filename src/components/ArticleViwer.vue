@@ -4,11 +4,11 @@
       <form @submit.prevent="search()">
         <img src="../assets/search.svg" alt="" style="width: 40px; padding-right: 30px">
         <input id="search_bar" type="text" placeholder="rechercher">
-        <button type='submit'>Rechercher</button>
+        <button type='submit'  :disabled="true" >Rechercher</button>
       </form>
       <br>
       <br>
-      <button @click="edit('addForm')">Ajouter un livre</button>
+      <button @click="edit('addForm')" v-bind:class="{ hidden: !admin }">Ajouter un livre</button>
 
       <div class="editor-container " v-bind:id="'addForm'">
         <div class="editor">
@@ -63,9 +63,9 @@
               <div class="hidden description">isbn : {{ book.isbn }}</div>
               <div class="hidden description">stock : {{ book.supply }} unité</div>
               <div class="nav-bar-space-evenly">
-                <button class="hidden">Emprunter</button>
-                <button class="hidden" @click="edit('edit_' + book.book_id)">Modifier</button>
-                <button class="hidden" @click="deleteBook(book.book_id)">Supprimer</button>
+                <button class="hidden" @click="borrow(book.book_id)">Emprunter</button>
+                <button class="hidden" @click="edit('edit_' + book.book_id)" :disabled="!admin">Modifier 🛠️</button>
+                <button class="hidden" @click="deleteBook(book.book_id)" :disabled="!admin">Supprimer 🛠️</button>
               </div>
             </div>
           </div>
@@ -132,16 +132,28 @@
     data () {
       return {
         books: [],
+        userSession: {},
+        logged : false,
+        admin: false
       }
     },
     mounted:function(){
       this.getBooks() //method1 will execute at pageload
+      this.getSession()
     },
     methods: {
       getBooks(){
         fetch('http://localhost:5000/books')
         .then((response) => response.json())
         .then((response) => this.books = response.data)
+      },
+      getSession(){
+        fetch('http://localhost:5000/mockSession')
+        .then((response) => response.json())
+        .then((response) => {this.userSession = response
+          console.log('logged ' + response.user_id == undefined)
+          if (response.admin == 1){this.admin = true}
+          else {this.admin = false}})
       },
       edit(bookId){
         const bookEdit = document.getElementById(bookId)
@@ -176,16 +188,18 @@
         })
       },
       deleteBook(bookId){
-        console.log('delete ' + bookId)
-        fetch('http://localhost:5000/books/' + bookId, {
-          method:'DELETE'
-        })
-        .then((response) => response.json())
-        .then((response) => {
-          if (response.deleted_rows == 1) {
-            this.getBooks()
-          }
-        })
+        if (confirm("Voulez vous vraiment supprimer!")) {
+          console.log('delete ' + bookId)
+          fetch('http://localhost:5000/books/' + bookId, {
+            method:'DELETE'
+          })
+          .then((response) => response.json())
+          .then((response) => {
+            if (response.deleted_rows == 1) {
+              this.getBooks()
+            }
+          })
+        }
       },
       addBook(){
         var bookInfo = new bookData(
@@ -226,6 +240,30 @@
         .then((response) => response.json())
         .then((response) => this.books = response.data)
         console.log('search')
+      },
+      borrow(bookId){
+        console.log(this.userSession)
+        if (this.userSession.first_name == undefined){
+          console.log(this.userSession.first_name)
+          alert('veillez vous identifier')
+        } else {
+          let choseQuantity = prompt("combien vouler vous emprunter", 1);
+          if (choseQuantity == null || choseQuantity == "") {
+            console.log("Annulé")
+          } else {
+          var quantity = parseInt(choseQuantity);
+            console.log(quantity)
+            console.log("vous emprunter " + choseQuantity)
+          fetch('http://localhost:5000/panier', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method:'POST',
+            body: JSON.stringify({book_id : bookId, user_id : this.userSession.user_id, supply : quantity})
+          })
+          .then((response) => response.json())
+          }
+        }
       }
     }
   }

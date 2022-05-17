@@ -4,11 +4,12 @@
             <img src="../assets/logo.svg" alt="" style="height:100px" class="logo nav">
             <h1>PageOne by Efrei</h1>
         </div>
-        <div></div>
+        <div>
+        </div>
         <div class="nav-bar-space-evenly" style="display: flex; align-items: center;">
             <a href="/SignUp" style="margin-right:25px" class=" flex-container-column-space-evenly">
                 <img src="../assets/user.svg" alt="" class="logo ico">
-                <button>Utilisateur</button>
+                <button> {{ user }} </button>
             </a>
             <a href="/" style="margin-right:10px" class=" flex-container-column-space-evenly">
                 <img src="../assets/catalog.svg" alt="" class="logo ico">
@@ -24,6 +25,12 @@
 
 <script>
     export default {
-        name : 'BrowsingApp'
+        name : 'BrowsingApp',
+            data () {
+                return {
+                    user : 'Utilisateur',
+                }
+            },
         }
+
 </script>

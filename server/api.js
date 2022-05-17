@@ -1,38 +1,56 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
-const session = require('express-session');
 const router = express.Router()
 const dbService = require('./dbService');
 const bcrypt = require('bcrypt');
-
+//insert
+// get user
 
 router.use(express.urlencoded({ extended: false }));
 var cors = require('cors');
 router.use(cors()); 
 router.use(express.json())
-
+const cookieParser = require('cookie-parser')
+router.use(cookieParser())
+const session = require('express-session');
 router.use(
     session({
-        name: 'SESSION_ID',      // cookie name stored in the web browser
-        secret: 'my_secret',     // helps to protect session
-        cookie: {
-            maxAge: 30 * (24 * 60 * 60 * 1000)
-        },
-        resave: true,
-        saveUninitialized: true
+        secret: '34SDgsdgspxxxxxxxdfsG',     // helps to protect session
+        saveUninitialized: true,
+        resave: true
     })
 );
 
-
 console.log('\x1b[33mApi loaded\x1b[0m')
 
+
+
+// router.post('/session', (req, res) =>{
+//     req.session.user = req.body.user
+//     console.log('session id : ' + req.sessionID)
+//     res.json({session : req.session})
+// })
+
+// router.get('/session', (req, res) =>{
+//     console.log('current session : ' + req.sessionID)
+//     res.sendStatus(200)
+// })
+
 var users = []
-const db = dbService.getDbServiceInstance();
+const db = dbService.getDbServiceInstance(); //creation dinstance
 const result = db.getUsers();
 result
 .then(data => users = data)
 .catch(err => console.log('getting users' + err))
+
+var userSession = {}
+console.log(userSession)
+
+router.get('/mockSession', (req, res) => {
+    res.json(userSession)
+});
+
 
 //login account
 router.post('/SignIn', async (req, res) => {
@@ -43,6 +61,8 @@ router.post('/SignIn', async (req, res) => {
     try {
         if(await bcrypt.compare(req.body.logAttempt.password, user.password)) {
             console.log(user.first_name + ' logged in')
+            userSession = user
+            console.log(userSession)
             res.json({result: 'Bienvenu ' + user.first_name, user: user})
         } else {
             res.json({result : 'Mot de pass inccorect'})
@@ -53,7 +73,7 @@ router.post('/SignIn', async (req, res) => {
 })
 
 //create account
-router.post('/post', (req, res) => {
+router.post('/SignUp', (req, res) => { //register
     console.log("\x1b[33mpost request\x1b[0m");
     const db = dbService.getDbServiceInstance();
     const result = db.insertAccount(req.body.newAccount.firstName ,req.body.newAccount.lastName , req.body.newAccount.email, req.body.newAccount.password)
@@ -126,6 +146,51 @@ router.get('/books/:name', (req, res) => {
     result
     .then(data => res.json({data : data}))
     .catch(err => console.log(err));
+})
+
+//post in cart
+router.post('/panier', (req, res) => {
+    console.log("\x1b[33mCart request\x1b[0m");
+    const db = dbService.getDbServiceInstance();
+    const result = db.findUserCart(req.body.user_id);
+    result
+    .then(data => {
+        if(data.length == 0){
+            console.log('new panier')
+            const result2 = db.addUserCart(req.body.user_id);
+            result2
+            .then(data => {
+                if(data.affectedRows == 1){
+                    const newPanier = data.insertId
+                    const result3 = db.addBookToPanier(newPanier, req.body.book_id, req.body.supply);
+                    result3
+                    .then(data => {console.log(data)})
+                }
+            })
+        } else {
+            console.log('le panier existe')
+            const newPanier = data[0].panier_id
+            const result3 = db.addBookToPanier(newPanier, req.body.book_id, req.body.supply);
+            result3
+            .then(data => {console.log(data)})
+        }
+    })
+    .catch(err => console.log(err));
+
+});
+
+router.get('/panier/:user_id', (req, res) => {
+    console.log('\x1b[33mBook catalog reqest\x1b[0m')
+    const db = dbService.getDbServiceInstance();
+    const result = db.getPanier(req.params.user_id);
+    result
+    .then(data => res.json({data : data}))
+    .catch(err => console.log(err));
+});
+
+router.get('/logout', (res, req) => {
+    console.log('logout')
+    userSession = {}
 })
 
 

@@ -23,6 +23,7 @@ CREATE TABLE `panier` (
   `user_id` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`panier_id`)
 );
+SELECT * FROM panier ;
 
 DROP TABLE IF EXISTS panier_item;
 CREATE TABLE `panier_item` (
@@ -32,6 +33,9 @@ CREATE TABLE `panier_item` (
   `supply` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_panier_item`)
 );
+SELECT * FROM panier_item ;
+select user_id,book_id,supply from panier_item cross join panier where user_id = 1;
+select pi.book_id, pi.supply, b.name from(select book_id,supply from panier_item cross join panier where user_id = 1) as pi join books b on b.book_id where b.book_id=pi.book_id order by book_id;
 
 DROP TABLE IF EXISTS books;
 CREATE TABLE books(
